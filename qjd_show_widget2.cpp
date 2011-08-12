@@ -377,7 +377,7 @@ void qjd_sgy_widget2::paintData(QPainter *painter)
             // 有大量的负值和超值
             if(colorValue>=colorTable.size() || colorValue<0)
             {
-//                qDebug()<<"Warning::paintData::Qusetion color value:"<<i<<j<<colorValue;
+                qDebug()<<"Warning::paintData::Qusetion color value:"<<i<<j<<colorValue;
                 if(colorValue<0)
                     colorValue=0;
                 if(colorValue>=colorTable.size())

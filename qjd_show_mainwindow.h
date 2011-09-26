@@ -16,7 +16,6 @@
 #include "qjd_show_help.h"
 #include "qjd_show_segy.h"
 #include <QProgressBar>
-#include "qjdscrollbar.h"
 #include "changecolorrange.h"
 #include <QTimer>
 

@@ -21,7 +21,6 @@ SOURCES += main.cpp \
     qjdtraceheader.cpp \
     qjd.cpp \
     qjddatastream.cpp \
-    qjdscrollbar.cpp \
     qjd_show_text.cpp \
     changecolorrange.cpp
 
@@ -34,7 +33,6 @@ HEADERS += qjd_show_mainwindow.h \
     qjdtraceheader.h \
     qjd.h \
     qjddatastream.h \
-    qjdscrollbar.h \
     qjd_show_text.h \
     changecolorrange.h
 
@@ -46,3 +44,5 @@ RESOURCES += image.qrc \
 
 OTHER_FILES += \
     styles/stylesheet.qss
+
+

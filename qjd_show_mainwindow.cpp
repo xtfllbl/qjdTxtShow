@@ -10,6 +10,8 @@
 
 qjdMainWindow::qjdMainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWindow)
 {
+    XADD=5;
+    YADD=15;
     COUNT=0;
     my = new qjd_sgy_widget2();  //换成widget2
     qjdsgy=new QJD_sgy_segy();
@@ -64,7 +66,7 @@ qjdMainWindow::qjdMainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::M
     statusBar()->addWidget(statusLabel5);
     statusBar()->addWidget(statusLabel6);
 
-    label1->setFixedHeight(25); //空出上面 25
+    label1->setFixedHeight(0); //空出上面 25
     label2->setFixedWidth(80);  //左面 80  |口
     label3->setFixedWidth(80);  //右面 80  口|
     label4->setFixedHeight(40); //下面 40
@@ -140,6 +142,7 @@ void qjdMainWindow::mouseDoubleClickEvent(QMouseEvent *event)
 void qjdMainWindow::mouseMoveEvent ( QMouseEvent *event )
 {
     QPoint point =  my->mapFromGlobal(event->globalPos());
+//    qDebug()<<point<<my->width()<<my->height();
     if (my->rubberBandIsShown)      //画框框
     {
         my->updateRubberBandRegion();
@@ -414,7 +417,6 @@ void qjdMainWindow::paintCor(QPainter *painter)
         }
 
         /// ----- 纵轴------ ///
-        // 纵轴问题多多,稍后处理
         if(maxH-minH>=25)
         {
             float verGap=(maxH-minH)*1. / my->height();
@@ -474,7 +476,8 @@ void qjdMainWindow::paintCor(QPainter *painter)
         //        qDebug()<<"Hor::minHor::"<<minHorNumber<<useHor<<"Ver::minVer::"<<minHorNumber<<useVer;
     }
     /// ---------------------------------
-    int more=20;
+    int moreX=20;
+    int moreY=10;
     if(point.isNull())      //保证这个值不变
     {
         point=my->mapTo(centralWidget(),my->zeroPoint);
@@ -488,9 +491,9 @@ void qjdMainWindow::paintCor(QPainter *painter)
 
     /// ----------------------------------横轴--------------------------------------
     painter->drawLine(point.x(),
-                      my->height()+40+ui->mainToolBar->height()+more+ui->menuBar->height(),
+                      my->height()+XADD+ui->mainToolBar->height()+moreX+ui->menuBar->height(),
                       my->width()+point.x(),
-                      my->height()+40+ui->mainToolBar->height()+more+ui->menuBar->height());
+                      my->height()+XADD+ui->mainToolBar->height()+moreX+ui->menuBar->height());
 
     /// 放大前
     if( isTxt==true && corChange==false )
@@ -498,16 +501,16 @@ void qjdMainWindow::paintCor(QPainter *painter)
         for(int x=0;x<=(my->width()/useHor);x++)
         {
             painter->drawLine((int)(useHor*x+point.x()),
-                              my->height()+40+ui->mainToolBar->height()+more+ui->menuBar->height(),
+                              my->height()+XADD+ui->mainToolBar->height()+moreX+ui->menuBar->height(),
                               (int)(useHor*x+point.x()),
-                              my->height()+40+ui->mainToolBar->height()+more-6+ui->menuBar->height());
+                              my->height()+XADD+ui->mainToolBar->height()+moreX-6+ui->menuBar->height());
         }
         for(int x=0;x<(my->width()/(useHor/5));x++)
         {
             painter->drawLine((int)((useHor/5)*x+point.x()),
-                              my->height()+40+ui->mainToolBar->height()+more+ui->menuBar->height(),
+                              my->height()+XADD+ui->mainToolBar->height()+moreX+ui->menuBar->height(),
                               (int)((useHor/5)*x+point.x()),
-                              my->height()+40+ui->mainToolBar->height()+more-3+ui->menuBar->height());
+                              my->height()+XADD+ui->mainToolBar->height()+moreX-3+ui->menuBar->height());
         }
     }
     /// 放大后
@@ -518,9 +521,9 @@ void qjdMainWindow::paintCor(QPainter *painter)
             if(startHorPos+useHor*x+point.x() <= (my->width()+point.x()) )
             {
                 painter->drawLine((int)(startHorPos+useHor*x+point.x()),
-                                  my->height()+40+ui->mainToolBar->height()+more+ui->menuBar->height(),
+                                  my->height()+XADD+ui->mainToolBar->height()+moreX+ui->menuBar->height(),
                                   (int)(startHorPos+useHor*x+point.x()),
-                                  my->height()+40+ui->mainToolBar->height()+more-6+ui->menuBar->height());
+                                  my->height()+XADD+ui->mainToolBar->height()+moreX-6+ui->menuBar->height());
             }
         }
         for(int x=0;x<(my->width()/(useHor/5));x++)
@@ -528,35 +531,35 @@ void qjdMainWindow::paintCor(QPainter *painter)
             if(startHorPos+(useHor/5)*x+point.x() <= (my->width()+point.x()) )
             {
                 painter->drawLine((int)(startHorPos+(useHor/5)*x+point.x()),
-                                  my->height()+40+ui->mainToolBar->height()+more+ui->menuBar->height(),
+                                  my->height()+XADD+ui->mainToolBar->height()+moreX+ui->menuBar->height(),
                                   (int)(startHorPos+(useHor/5)*x+point.x()),
-                                  my->height()+40+ui->mainToolBar->height()+more-3+ui->menuBar->height());
+                                  my->height()+XADD+ui->mainToolBar->height()+moreX-3+ui->menuBar->height());
             }
         }
     }
 
 
     /// ------------------------------------纵轴--------------------------------------
-    painter->drawLine(my->width()+more+point.x(),
-                      40+ui->mainToolBar->height()+ui->menuBar->height(),
-                      my->width()+more+point.x(),
-                      my->height()+40+ui->mainToolBar->height()+ui->menuBar->height());
+    painter->drawLine(my->width()+moreY+point.x(),
+                      YADD+ui->mainToolBar->height()+ui->menuBar->height(),
+                      my->width()+moreY+point.x(),
+                      my->height()+YADD+ui->mainToolBar->height()+ui->menuBar->height());
     /// 放大前
     if( isTxt==true && corChange==false)
     {
         for(int y=0;y<=(my->height()/useVer);y++)
         {
-            painter->drawLine(my->width()+more+point.x(),
-                              (int)( 40+ui->mainToolBar->height()+y*useVer+ui->menuBar->height() ),
-                              my->width()+more+point.x()-6,
-                              (int)( 40+ui->mainToolBar->height()+y*useVer+ui->menuBar->height()) );
+            painter->drawLine(my->width()+moreY+point.x(),
+                              (int)( YADD+ui->mainToolBar->height()+y*useVer+ui->menuBar->height() ),
+                              my->width()+moreY+point.x()-6,
+                              (int)( YADD+ui->mainToolBar->height()+y*useVer+ui->menuBar->height()) );
         }
         for(int y=0;y<(my->height()/(useVer/5));y++)
         {
-            painter->drawLine(my->width()+more+point.x(),
-                              (int)( 40+ui->mainToolBar->height()+y*(useVer/5)+ui->menuBar->height() ),
-                              my->width()+more+point.x()-3,
-                              (int)( 40+ui->mainToolBar->height()+y*(useVer/5)+ui->menuBar->height()) );
+            painter->drawLine(my->width()+moreY+point.x(),
+                              (int)( YADD+ui->mainToolBar->height()+y*(useVer/5)+ui->menuBar->height() ),
+                              my->width()+moreY+point.x()-3,
+                              (int)( YADD+ui->mainToolBar->height()+y*(useVer/5)+ui->menuBar->height()) );
         }
     }
     /// 放大后
@@ -564,69 +567,80 @@ void qjdMainWindow::paintCor(QPainter *painter)
     {
         for(int y=0;y<=(my->height()/useVer);y++)
         {
-            if((int)( 40+ui->mainToolBar->height()+y*useVer+ui->menuBar->height()) +startVerPos<=
-                    my->height()+40+ui->mainToolBar->height()+ui->menuBar->height())
+            if((int)( YADD+ui->mainToolBar->height()+y*useVer+ui->menuBar->height()) +startVerPos<=
+                    my->height()+YADD+ui->mainToolBar->height()+ui->menuBar->height())
             {
-                painter->drawLine(my->width()+more+point.x(),
-                                  (int)( 40+ui->mainToolBar->height()+y*useVer+ui->menuBar->height()+startVerPos ),
-                                  my->width()+more+point.x()-6,
-                                  (int)( 40+ui->mainToolBar->height()+y*useVer+ui->menuBar->height())+startVerPos );
+                painter->drawLine(my->width()+moreY+point.x(),
+                                  (int)( YADD+ui->mainToolBar->height()+y*useVer+ui->menuBar->height()+startVerPos ),
+                                  my->width()+moreY+point.x()-6,
+                                  (int)( YADD+ui->mainToolBar->height()+y*useVer+ui->menuBar->height())+startVerPos );
             }
         }
         for(int y=0;y<(my->height()/(useVer/5));y++)
         {
-            if((int)( 40+ui->mainToolBar->height()+y*(useVer/5)+ui->menuBar->height() +startVerPos) <=
-                    my->height()+40+ui->mainToolBar->height()+ui->menuBar->height())
+            if((int)( YADD+ui->mainToolBar->height()+y*(useVer/5)+ui->menuBar->height() +startVerPos) <=
+                    my->height()+YADD+ui->mainToolBar->height()+ui->menuBar->height())
             {
-                painter->drawLine(my->width()+more+point.x(),
-                                  (int)( 40+ui->mainToolBar->height()+y*(useVer/5)+ui->menuBar->height()+startVerPos ),
-                                  my->width()+more+point.x()-3,
-                                  (int)( 40+ui->mainToolBar->height()+y*(useVer/5)+ui->menuBar->height())+startVerPos );
+                painter->drawLine(my->width()+moreY+point.x(),
+                                  (int)( YADD+ui->mainToolBar->height()+y*(useVer/5)+ui->menuBar->height()+startVerPos ),
+                                  my->width()+moreY+point.x()-3,
+                                  (int)( YADD+ui->mainToolBar->height()+y*(useVer/5)+ui->menuBar->height())+startVerPos );
             }
         }
     }
 
 
-
-
-    /// 写标记
     if(isSgy==true)
     {
         /// time
-        painter->drawText(my->width()+more+point.x()-4,40+ui->mainToolBar->height()+ui->menuBar->height()-7,"Time");
+        painter->drawText(my->width()+moreY+point.x()-4,
+                          YADD+ui->mainToolBar->height()+ui->menuBar->height()-7,
+                          "Time (ms)");
 
         /// Trace
         painter->drawText(my->width()+point.x(),
-                          my->height()+40+ui->mainToolBar->height()+more+ui->menuBar->height()+20,
+                          my->height()+XADD+ui->mainToolBar->height()+moreX+ui->menuBar->height()+20,
                           "Trace Num");
     }
+//    qDebug()<<isTxt<<qjdtxt->fileType;
     if(isTxt==true && qjdtxt->fileType==1)
     {
+        painter->save();
+        painter->rotate(90);
         /// time
-        painter->drawText(my->width()+more+point.x()-4,40+ui->mainToolBar->height()+ui->menuBar->height()-7,"Time");
+        // x是y,y是x,y是负方向
+        painter->drawText(YADD+ui->mainToolBar->height()+ui->menuBar->height()+my->height()/2 -30,
+                          -(  my->width()+moreY+point.x()+50   ),
+                          "Time (ms)");
+        painter->restore();
 
         /// velo
-        painter->drawText(my->width()+point.x()+5,
-                          my->height()+40+ui->mainToolBar->height()+more+ui->menuBar->height()+5,
-                          "Offset");
+        painter->drawText(my->width()/2 +point.x() -30,
+                          my->height()+ui->mainToolBar->height()+moreX+ui->menuBar->height()+3*YADD,
+                          "Offset (m)");
+
     }
     if(isTxt==true && qjdtxt->fileType==2)
     {
         /// time
-        painter->drawText(my->width()+more+point.x()-4,40+ui->mainToolBar->height()+ui->menuBar->height()-7,"Time");
+        painter->drawText(my->width()+moreY+point.x()-4,
+                          YADD+ui->mainToolBar->height()+ui->menuBar->height()-7,
+                          "Time (ms)");
 
 
         /// Velo
         painter->drawText(my->width()+point.x()+5,
-                          my->height()+40+ui->mainToolBar->height()+more+ui->menuBar->height()+5,
+                          my->height()+XADD+ui->mainToolBar->height()+moreX+ui->menuBar->height()+5,
                           "Unknow");
     }       
+
 }
 
 // 改变思路,依据坐标轴的变化,仅显示整数值
 void qjdMainWindow::paintCorTxt(QPainter *painter)
 {
-    int more=20;
+    int moreX=20;
+    int moreY=10;
     /// ----------------------------------------------------------------------------------*/
     ///                           写坐标值                                                          */
     /// ----------------------------------------------------------------------------------*/
@@ -652,7 +666,7 @@ void qjdMainWindow::paintCorTxt(QPainter *painter)
                 }
             }
             painter->drawText((int)(useHor*x+point.x()-10),
-                              my->height()+40+ui->mainToolBar->height()+2*more+ui->menuBar->height(),
+                              my->height()+XADD+ui->mainToolBar->height()+2*moreX+ui->menuBar->height(),
                               string);
         }
 
@@ -676,8 +690,8 @@ void qjdMainWindow::paintCorTxt(QPainter *painter)
                     string=QString::number(minVerNumber*y);
                 }
             }
-            painter->drawText(my->width()+more+point.x()+10,
-                              (int)( 40+ui->mainToolBar->height()+y*useVer+ui->menuBar->height()+5 ),
+            painter->drawText(my->width()+moreY+point.x()+10,
+                              (int)( YADD+ui->mainToolBar->height()+y*useVer+ui->menuBar->height()+5 ),
                               string);
         }
     }
@@ -702,7 +716,7 @@ void qjdMainWindow::paintCorTxt(QPainter *painter)
                         string=QString::number(minHorNumber+useHorGap*x);  /// 不应当是这样计算的
                     }
                     painter->drawText((int)( startHorPos+useHor*x+point.x()-10 ),
-                                      my->height()+40+ui->mainToolBar->height()+2*more+ui->menuBar->height(),
+                                      my->height()+XADD+ui->mainToolBar->height()+2*moreX+ui->menuBar->height(),
                                       string);
                 }
             }
@@ -713,8 +727,8 @@ void qjdMainWindow::paintCorTxt(QPainter *painter)
             //        int time=qjdsgy->ns()*qjdsgy->dt()/1000;
             for(int y=0;y<=my->height()/useVer;y++)
             {
-                if((int)( 40+ui->mainToolBar->height()+y*useVer+ui->menuBar->height())+startVerPos <=
-                        my->height()+40+ui->mainToolBar->height()+ui->menuBar->height())
+                if((int)( YADD+ui->mainToolBar->height()+y*useVer+ui->menuBar->height())+startVerPos <=
+                        my->height()+YADD+ui->mainToolBar->height()+ui->menuBar->height())
                 {
                     QString string;
                     if(y==0)
@@ -725,8 +739,8 @@ void qjdMainWindow::paintCorTxt(QPainter *painter)
                     {
                         string=QString::number(minVerNumber+useVerGap*y);
                     }
-                    painter->drawText(my->width()+more+point.x()+10,
-                                      (int)( 40+ui->mainToolBar->height()+y*useVer+ui->menuBar->height()+5+startVerPos ),
+                    painter->drawText(my->width()+moreY+point.x()+10,
+                                      (int)( YADD+ui->mainToolBar->height()+y*useVer+ui->menuBar->height()+5+startVerPos ),
                                       string);
                 }
             }
@@ -754,15 +768,15 @@ void qjdMainWindow::paintColorTable(QPainter *painter)
         }
     }
     //色表
-    painter->drawImage(60,40+ui->mainToolBar->height()+ui->menuBar->height(),imageTable);
+    painter->drawImage(60,YADD+ui->mainToolBar->height()+ui->menuBar->height(),imageTable);
 
     //包围
-    painter->drawRect(60,40+ui->mainToolBar->height()+ui->menuBar->height(),30,my->height());
+    painter->drawRect(60,YADD+ui->mainToolBar->height()+ui->menuBar->height(),30,my->height());
     //刻度
     for(int i=0;i<9;i++)
     {
-        painter->drawLine(60,40+ui->mainToolBar->height()+ui->menuBar->height()+my->height()/9*i,
-                          70,40+ui->mainToolBar->height()+ui->menuBar->height()+my->height()/9*i);
+        painter->drawLine(60,YADD+ui->mainToolBar->height()+ui->menuBar->height()+my->height()/9*i,
+                          70,YADD+ui->mainToolBar->height()+ui->menuBar->height()+my->height()/9*i);
     }
 
     // 色表边上的数值
@@ -770,23 +784,42 @@ void qjdMainWindow::paintColorTable(QPainter *painter)
     if(my->isSet==true)
     {
         float gap=my->useMax-my->useMin;  //最大，最小
-        //        qDebug()<<my->useMin<<my->useMax;
+        int showMax=my->useMax;
+        int yushu=showMax%10;
+        if(yushu<=4)
+        {
+            showMax=showMax-yushu;
+        }
+        if(yushu>4)
+        {
+            showMax=showMax-yushu+10;
+        }
+
         for(int i=0;i<9;i++)
         {
-            float showValue=my->useMin+gap*1.*i/9;
-            QString text = QString::number(showValue, 'f', 1);
+            int showValue=my->useMin+gap*1.*i/9;  /// 计算一下 离整数近
+            yushu=showValue%10;
+            if(yushu<=4)
+            {
+                showValue=showValue-yushu;
+            }
+            if(yushu>4)
+            {
+                showValue=showValue-yushu+10;
+            }
+            QString text = QString::number(showValue);
 
             // qDebug()<<"shu chu de text:"<<text;  // 输出没问题,问题出在显示上
             /// 最大显示12345678
             /// x,y,width,height
             painter->drawText(0,
-                              27+ui->mainToolBar->height()+ui->menuBar->height()+my->height()/9*i+5,
+                              ui->mainToolBar->height()+ui->menuBar->height()+my->height()/9*i+XADD,
                               58,50,Qt::AlignRight,
                               text);
         }
-        QString text=QString::number(my->useMax,'f', 1);
+        QString text=QString::number(showMax);
         painter->drawText(0,
-                          27+ui->mainToolBar->height()+ui->menuBar->height()+my->height(),
+                          ui->mainToolBar->height()+ui->menuBar->height()+my->height()+XADD,
                           58,50,Qt::AlignRight,
                           text);
     }
@@ -798,7 +831,6 @@ void qjdMainWindow::resizeEvent (QResizeEvent * )
     // 此处放开,不受限制
     my->resize(my->width(),my->height());
     my->refreshPixmap();
-
 }
 
 void qjdMainWindow::cleanCache()
@@ -902,16 +934,16 @@ void qjdMainWindow::setStatusBarText(QPoint point)
 {
     if(isTxt==true)
     {
-        statusLabel1->setText("Offset::");
+        statusLabel1->setText("Offset (m)::");
         QString offset=QString::number((qjdtxt->colMin()+(qjdtxt->colNum()-1)*qjdtxt->colGap()*point.x()/my->width()));
         statusLabel2->setText(offset);
 
-        statusLabel3->setText("Time::");
+        statusLabel3->setText("Time (ms)::");
         QString time=QString::number((qjdtxt->rowMin()+(qjdtxt->rowNum()-1)*qjdtxt->rowGap() ) * (point.y())/my->height());
         statusLabel4->setText(time);
 
         /// 关键是值怎么算
-        statusLabel5->setText("XXX::");
+        statusLabel5->setText("Velo (m/s)::");
         float xxx=my->boxXY[point.x()][point.y()];
         QString a=QString::number(xxx*my->unit + my->useMin);  // 这个是从0开始
         statusLabel6->setText(a);

@@ -91,6 +91,8 @@ private:
     int startHorPos;
     int startVerPos;
 
+    int XADD;
+    int YADD;
 private slots:
     void on_actionChangeColorTable_triggered();
     void on_actionOpen_triggered();

@@ -8,7 +8,7 @@
 #include <stdio.h>
 #define Num 100
 
-qjdMainWindow::qjdMainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWindow)
+qjdMainWindow::qjdMainWindow(QString fn,QString dirstr,QWidget *parent): QMainWindow(parent), ui(new Ui::MainWindow)
 {
     XADD=5;
     YADD=15;
@@ -106,11 +106,50 @@ qjdMainWindow::qjdMainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::M
     QTextStream in(&file);
     QString s = in.readAll();
     this->setStyleSheet(s);
+
+
+    /// -------- 外加参数打开文件------ ///
+//    my->refreshPixmap();
+    resize(this->width()-1,this->height()-1);
+
+    if(fn!="")
+    {
+        arguOpen(fn,dirstr);
+//        my->refreshPixmap();
+    }
+
+
 }
 
 qjdMainWindow::~qjdMainWindow()
 {
     delete ui;  //不置可否
+}
+
+void qjdMainWindow::arguOpen(QString fn,QString dirstr)
+{
+    qDebug()<<"arguOpen";
+    m_dir=dirstr;
+
+    QString tdir="./";
+    if(!m_dir.isEmpty()) tdir=m_dir;
+    QString openFileName=fn;
+    // 这里可以做一些事先的清理工作
+    cleanCache();
+
+    if(openFileName.right(3)=="txt" || openFileName.right(3)=="text")
+    {
+        qDebug()<<"FileType::This is a txt file.";
+        isTxt=true;
+        qjdtxt->setFileData(openFileName);
+        my->setData(qjdtxt->dataList);
+
+        saveMinW=qjdtxt->colMin();
+        saveMaxW=qjdtxt->colMin()+qjdtxt->colGap()*(qjdtxt->colNum()-1);
+        saveMinH=qjdtxt->rowMin();
+        saveMaxH=qjdtxt->rowMin()+qjdtxt->rowGap()*(qjdtxt->rowNum()-1);
+    }
+
 }
 
 void qjdMainWindow::mousePressEvent( QMouseEvent *event)
@@ -847,11 +886,13 @@ void qjdMainWindow::cleanCache()
 
 void qjdMainWindow::on_actionOpen_triggered()
 {
-    QString openFileName=QFileDialog::getOpenFileName(this,tr("Open Files"),"/home/xtf/Source/SEGY/sgyshow",
+    QString tdir="./";
+    if(!m_dir.isEmpty()) tdir=m_dir;
+    QString openFileName=QFileDialog::getOpenFileName(this,tr("Open Files"),tdir,
                                                       tr("text files(*.txt *.text);;SEGY files(*.segy *.Segy *.SEGY *.sgy *.Sgy *.SGY)"));
     if(openFileName=="")
     {
-        QMessageBox::warning(this,"Choose a file","You need to choose a segy file to continue.");
+        //QMessageBox::warning(this,"Choose a file","You need to choose a segy file to continue.");
         return;
     }
     // 这里可以做一些事先的清理工作
@@ -868,7 +909,6 @@ void qjdMainWindow::on_actionOpen_triggered()
         saveMaxW=qjdtxt->colMin()+qjdtxt->colGap()*(qjdtxt->colNum()-1);
         saveMinH=qjdtxt->rowMin();
         saveMaxH=qjdtxt->rowMin()+qjdtxt->rowGap()*(qjdtxt->rowNum()-1);
-
     }
     else
     {

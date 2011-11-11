@@ -1,4 +1,5 @@
-TARGET = show
+#TARGET = show
+TARGET =../jdSwd/bin/jdVelShow
 TEMPLATE = app
 CONFIG += qt debug
 QMAKE_LFAGS+= -static

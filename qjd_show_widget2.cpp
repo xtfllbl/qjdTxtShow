@@ -406,7 +406,7 @@ void qjd_sgy_widget2::paintEvent(QPaintEvent *)
 
 void qjd_sgy_widget2::refreshPixmap()
 {
-//    qDebug()<<"refreshPixmap";
+    qDebug()<<"refreshPixmap";
     pixmap = QPixmap(size());
     pixmap.fill(this, 0, 0);
 

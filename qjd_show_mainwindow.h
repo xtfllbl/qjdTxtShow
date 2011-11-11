@@ -28,7 +28,7 @@ class qjdMainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    qjdMainWindow(QWidget *parent = 0);
+    qjdMainWindow(QString fn,QString dirstr,QWidget *parent=0);
     ~qjdMainWindow();
     Ui::MainWindow *ui;
 
@@ -38,6 +38,8 @@ private:
     QJD_sgy_segy *qjdsgy;
     QJD_show_text *qjdtxt;
     changeColorRange *changeRange;
+
+    QString  m_dir;
 
 //    QScrollBar *horBar;
 //    QScrollBar *verBar;
@@ -95,6 +97,7 @@ private:
 private slots:
     void on_actionChangeColorTable_triggered();
     void on_actionOpen_triggered();
+    void arguOpen(QString fn, QString dirstr);
     void on_actionHelp_triggered();
     void on_actionClose_triggered();
     void on_actionReset_triggered();
